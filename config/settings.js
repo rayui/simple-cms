@@ -82,8 +82,8 @@ var dev = {
 						'Content-Type':'text/html'
 					}	
 				},
-				model: 'defaultData',
-				template: 'multiply'
+				model: 'default',
+				template: 'index'
 			},
 			{
 				regex:'^(\\/[\\w\\-\\.]+)$',
@@ -112,8 +112,8 @@ var dev = {
 						'Content-Type':String(headers['content-type']).indexOf('json') >= 0 ? 'application/json' : 'text/html'
 					}
 				},
-				model: 'multiplyData',
-				template: 'multiply'
+				model: 'default',
+				template: 'index'
 			}
 		]
 	}

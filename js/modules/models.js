@@ -3,6 +3,11 @@ var _ = require('underscore')._,
 	validate = require('./shared/validate');
 
 //validate inputs and perform multiplication
+exports.default = function(data) {
+	return data;
+};
+	
+//validate inputs and perform multiplication
 exports.config = function(data) {
 	return data;
 };
