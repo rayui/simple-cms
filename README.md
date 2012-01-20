@@ -1,4 +1,4 @@
-# A simple lesson focussing on client side MVC in javascript
+# A simple CMS written in Node JS 
 
 ## To install all the requirements:
 
