@@ -6,6 +6,7 @@
 * Download and install npm
 * npm install underscore
 * npm install express
+* npm install mongoose
 * npm install jade
 * npm install optimist
 * npm install docco

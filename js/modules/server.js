@@ -91,7 +91,7 @@ exports.webServer = function(_settings){
 				case 'dynamic':
 				default:
 					var headers = route.headers(req.headers, req.params);
-					var data = utilities.callFunctionByName(route.model, models, req.params);
+					var data = utilities.callFunctionByName(route.model + '.process', models, req.params);
 					var template = settings.options['template_dir'] + '/' + route['template'] + '.jade';
 					serveHTML(data, template, utilities.callback(sendResponse, {args:[headers,res]}));
 			}	
@@ -103,7 +103,7 @@ exports.webServer = function(_settings){
 	function postRoute(_route) {
 		var router = function(req, res, next, route) {
 			var headers = route.headers(req.headers);
-			var data = utilities.callFunctionByName(route.model, models, req.body);
+			var data = utilities.callFunctionByName(route.model + '.process', models, req.body);
 			
 			//choose our render method based on request content type
 			switch (headers['Content-Type']) {
