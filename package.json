@@ -15,7 +15,7 @@
   "dependencies": {
   	"underscore":">=1.2.2",
   	"backbone":">=0.5.3",
-  	"mongoose":">=2.4.10"
+  	"mongoose":">=2.4.10",
   	"express":">=2.5.1",
   	"jade":">=0.17.0",
   	"optimist":">=0.3.1",
