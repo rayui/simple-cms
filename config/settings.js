@@ -70,7 +70,7 @@ var dev = {
 						'Content-Type':'text/html'
 					}	
 				},
-				model: 'config',
+				model: 'Config',
 				template: 'config'
 			},
 			{
@@ -82,7 +82,7 @@ var dev = {
 						'Content-Type':'text/html'
 					}	
 				},
-				model: 'default',
+				model: 'Default',
 				template: 'index'
 			},
 			{
@@ -112,7 +112,7 @@ var dev = {
 						'Content-Type':String(headers['content-type']).indexOf('json') >= 0 ? 'application/json' : 'text/html'
 					}
 				},
-				model: 'default',
+				model: 'Default',
 				template: 'index'
 			}
 		]

@@ -3,7 +3,7 @@ $(function($){
 	//simplest possible model
 	var Model = Backbone.Model.extend({
 		url:'/',
-		validate:validate.canMultiply
+		validate:validation.validateModel
 	});
 
 	//basic view for multiplier calculator
@@ -13,16 +13,18 @@ $(function($){
 		
 		//- default events
 		events:{
-			'change input[type="text"]':	'submit',
-			'submit #multiply':		'submit'
+			'click input[type="submit"]':		'submit'
 		},
-		
+
 		//- renders and error notification
-		renderError: function(name, error) {
-			$('input[name="' + name + '"]').addClass('error');
-			$('div#result').append('<span>' + name + ': ' + error + '</span>');
+		renderErrors: function(model, errors) {
+			clearErrors();
+			for (error in errors) {
+				$('input[name="' + error.name + '"]').addClass('error');
+				$('div#errors').append('<span>' + error.name + ': ' + error.error + '</span>');
+			}
 		},
-		
+
 		//- clears existing error notifications
 		clearErrors: function() {
 			$('input').removeClass('error');
@@ -35,16 +37,12 @@ $(function($){
 		submit:function() {	
 			var renderError = this.renderError;
 			var clearErrors = this.clearErrors;
+			
+			this.model.set({id:1});
 
-			this.model.save({
-				'operand1': $('input[name="operand1"]').val(),
-				'operand2': $('input[name="operand2"]').val()
-			},{
+			this.model.save(null, {
 				error: function(model, errors) {
-					clearErrors();
-					for (error in errors) {
-						renderError(errors[error].name, errors[error].error);
-					}
+
 				}
 			});
 			
@@ -68,7 +66,9 @@ $(function($){
 			//-- instantiate Model inside View and bind new model's change event to this View's render method
 			//-- note that this is backbone's bind, different from jQuery
 			this.model = new Model();
+			this.model.schema = models.User.schema;
 			this.model.bind('change', this.render, this);
+			this.model.bind('error', this.renderErrors, this);
 		}
 	});
 	

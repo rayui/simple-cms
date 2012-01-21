@@ -4,16 +4,16 @@ var _ = require('underscore')._,
 	express = require('express'),
 	jade = require('jade'),
 	utilities = require('./shared/utilities'),
-	models = require('./models');	
+	models = require('./shared/models');	
 	
 //set up server model
 exports.webServer = function(_settings){
 	//default settings
 	var settings = {
-        options:{
-            port:8000,
-            template_dir:'/../../templates'
-        }
+		options:{
+		    port:8000,
+		    template_dir:'/../../templates'
+		}
 	};
 	
 	//server error pages
@@ -125,7 +125,7 @@ exports.webServer = function(_settings){
 	var app = express.createServer();
 	
 	//extend default options
-    _.extend(settings, _settings);
+	_.extend(settings, _settings);
     
 	//configure express app
 	app.configure(function(){
