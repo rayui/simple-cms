@@ -36,8 +36,12 @@
 		schema: {
 			name: 'Default',
 			definition: {
-				id: {type: Number, index:true, required: true, validate:[validationRules.isEven, 'Must be unique']},
-				name: {type: String, index:true, required: true, validate:[validationRules.isString, 'Must be unique']},
+				id: {type: Number, index:true, required: true, validate:[validationRules.isEven, 'Must be an even number']},
+				name: {type: String, required: true, validate:[validationRules.isString, 'Must be a string']},
+				meta: {
+					likes: [String],
+					birth: { type: Date, default: Date.now }
+				}
 			}
 		},
 		process: function(data) {

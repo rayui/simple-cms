@@ -2,10 +2,12 @@ include doctype
 include header
 
 body
-    #header
-        h1 simple-cms
-    #page
-        input(type="submit");
-        #errors
-        a(href="/config") View the config
-        
+	#header
+		h1 simple-cms
+		#page
+			input#id(type="text", name="id")
+			input#name(type="text", name="name")
+			input(type="submit")
+		#errors
+			a(href="/config") View the config
+

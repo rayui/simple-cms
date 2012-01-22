@@ -48,7 +48,7 @@ input.error {
 	border:1px solid red;
 }
 
-#result span {
+#errors span {
 	display:block;
 	color:red;	
 }

@@ -18,17 +18,17 @@ $(function($){
 
 		//- renders and error notification
 		renderErrors: function(model, errors) {
-			clearErrors();
+			this.clearErrors();
 			for (error in errors) {
 				$('input[name="' + error.name + '"]').addClass('error');
-				$('div#errors').append('<span>' + error.name + ': ' + error.error + '</span>');
+				$('div#errors').append('<span>' + errors[error].name + ': ' + errors[error].error + '</span>');
 			}
 		},
 
 		//- clears existing error notifications
 		clearErrors: function() {
 			$('input').removeClass('error');
-			$('div#result').empty();
+			$('div#errors').empty();
 		},
 		
 		//- when inputs change, save the model to the server
@@ -38,7 +38,10 @@ $(function($){
 			var renderError = this.renderError;
 			var clearErrors = this.clearErrors;
 			
-			this.model.set({id:1});
+			this.model.set({
+				id:$('#id').val(),
+				name:$('#name').val()
+			});
 
 			this.model.save(null, {
 				error: function(model, errors) {
@@ -52,10 +55,10 @@ $(function($){
 		//- render result on server response
 		render: function() {
 			this.clearErrors();
-			$('div#result').text(
-				this.model.get('operand1') +
+			$('div#error').text(
+				this.model.get('id') +
 				' * ' +
-				this.model.get('operand2') +
+				this.model.get('name') +
 				' = ' +
 				this.model.get('result')
 			);

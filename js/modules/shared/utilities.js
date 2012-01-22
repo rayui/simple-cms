@@ -57,6 +57,5 @@
 		}
 		return context[func].apply(this, args);
 	}
-	
 
 })(typeof exports === 'undefined'? this['utilities']={}: exports);
