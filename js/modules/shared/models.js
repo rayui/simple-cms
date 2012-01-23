@@ -2,7 +2,8 @@
 
 (function(exports){
 	try {
-		var validationRules = require('./validation-rules.js');
+		var _ = require('underscore')._,
+			validationRules = require('./validation-rules.js');
 	} catch(err) {
 		var validationRules = this.validationRules || {};
 	}
@@ -27,6 +28,7 @@
 			}
 		},
 		process: function(data) {
+			var data = _.extend(data, {models:exports})
 			return data;
 		}
 	}

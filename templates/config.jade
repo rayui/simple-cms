@@ -27,4 +27,16 @@ body.config
                         tr
                             td.key
                                 em= attr + ': '
-                            td.value= settings.routing[key][attr]
+                            td.value= settings.routing[key][attr].toString()
+        h2 Models               
+        - for (var model in models)
+            h3= model
+            table
+                thead
+                    td.key Key
+                    td.value Value
+                - for (var attr in models[model])
+                    tr
+                        td.key
+                            em= attr + ': '
+                        td.value= models[model][attr].toString()
