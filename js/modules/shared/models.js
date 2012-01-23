@@ -37,7 +37,7 @@
 			name: 'Default',
 			definition: {
 				id: {type: Number, index:true, required: true, validate:[validationRules.isEven, 'Must be an even number']},
-				name: {type: String, required: true, validate:[validationRules.isString, 'Must be a string']},
+				name: {type: String, required: true},
 				meta: {
 					likes: [String],
 					birth: { type: Date, default: Date.now }

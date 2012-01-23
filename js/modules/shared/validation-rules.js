@@ -7,47 +7,51 @@
 	} catch(err) {
 
 	}
-	
-	var checkType = function(value) {
-		var vType, vStr;
-		
-		//first check for undefined
-		if (typeof value !== 'undefined') {
-			vType = value.constructor.toString();
-			vStr = value.toString();
-		} else {
-			return 'undefined';
+
+	var checkVarParsesType = function(type, value) {
+		switch (typeof type) {
+			case 'string':
+				if (new String(value).toString() === value) {
+					return true;
+				}
+				break;
+			case 'number':
+				if (new Number(value).toString() !== 'NaN') {
+					return true;
+				}
+				break;
+			case 'date':
+				if (new Date(value).toString() !== 'Invalid Date') {
+					return true;
+				}
+				break;
+			case 'boolean':
+				if (value.toString() === 'true' || value.toString() === 'false') {
+					return true;
+				}
+				break;
+			case 'buffer':
+				//to write
+				break;
+			case 'objectid':
+				//to write
+				break;
+			case 'mixed':
+				//to write
+				break;
+			case 'array':
+				if (value.constructor.toString().indexOf('Array') >= 0) {
+					return true;
+				}	
+				break;
+			default:
+				return false;
+				break;
 		}
-		
-		if (vType.indexOf('Function') >= 0) {
-			//then check for Function
-			return typeof Function();
-		} else if (vType.indexOf('Object') >= 0) {
-			//then check for Object
-			return typeof Object();
-		} else if (vType.indexOf('Array') >= 0) {
-			//then check for Array
-			return 'array';
-		} else if (vStr === 'true' || vStr === 'false') {
-			//then check for Boolean
-			return typeof Boolean();
-		} else if (vType.indexOf('Number') >= 0) {
-			//then check for Number
-			return typeof Number();
-		} else if (!isNaN(Date.parse(vStr))) {
-			//then check for Date
-			return 'date';
-		} else if (vType.indexOf('String') >= 0) {
-			//else if it is a String
-			return typeof String();
-		} else {
-			return 'unknown';
-		}
-	}
-	
-	//function to guess what type of data is in an object
-	exports.checkType = function (value) {
-		return checkType(value);
+	};
+
+	exports.checkVarParsesType = function(type, value) {
+		return checkVarParsesType(type, value);
 	}
 	
 	//check if it is an even number
@@ -57,7 +61,7 @@
 	
 	//check if it is an even number
 	exports.isString = function(value) {
-		return (checkType(value) === 'string');
+		return (checkVarParsesType(String(), value));
 	}
 
 	

@@ -11,12 +11,10 @@
 		}
 		
 		if (definition.hasOwnProperty('type')) {
-			console.log(validationRules.checkType(definition.type()));
-			console.log(record + ' ' + validationRules.checkType(record));
 			//else if is present check that data parses with supplied type to produce snesible result
 			//write new function for this in validation-rules
-			if (validationRules.checkType(definition.type()) !== validationRules.checkType(record)) {
-				return validationRules.checkType(definition.type()) + ' expected'; 
+			if (!validationRules.checkVarParsesType(definition.type(), record)) {
+				return definition.type.toString().match(/function\ ([A-Za-z0-9]+)/)[1] + ' expected';
 			}
 		}
 		
@@ -39,26 +37,26 @@
 			_data = _data || {};
 			//for each keyin schema definition
 			for (key in definition) {
-				var kt = validationRules.checkType(definition[key]);
-				var rt = validationRules.checkType(definition[key].type);
+				var def = definition[key];
+				var kt = def.constructor.toString();
 				
-				if (kt === 'array' && _data.hasOwnProperty(key)) {
-					//if the definition is an array validate each object in _data is of the type specified at index 0 in the array					
+				if (kt.indexOf('Array') >= 0 && _data.hasOwnProperty(key)) {
+					//if the definition contructor is an array validate each object in _data is of the type specified at index 0 in the array					
 					for (record in _data[key]) {
-						var error = validation.validateRecord({type:definition[key][0]}, _data[key][record]);
+						var error = validation.validateRecord({type:def[0]}, _data[key][record]);
 						if (error) {
 							//push to error array
 							errors.push({name:key + ':' + record,error:error});
 						}
 					}
 					
-				} else if (kt === 'object' && rt === 'undefined') {
+				} else if (kt.indexOf('Object') >= 0 && typeof(def.type) === 'undefined') {
 					//if the definition is an object without a type key we step into it
-					parse(definition[key], _data[key]);
+					parse(def, _data[key]);
 				} else {
 					//else we validate it
 					//if data doesn't conform to type
-					var error = validation.validateRecord(definition[key], _data[key]);
+					var error = validation.validateRecord(def, _data[key]);
 					if (error) {
 						//push to error array
 						errors.push({name:key,error:error});
