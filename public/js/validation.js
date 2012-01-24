@@ -2,19 +2,18 @@
 
 (function(exports){
 	exports.validateRecord = function(definition, record) {
-		if (definition.required && record === undefined) {
+		if (definition.required && record === undefined ||
+			definition.required && record.toString().length === 0 ) {
 			//if is required and not present return error message
-			return 'field required';
-		} else if (definition.required && record.toString().length === 0) {
-			//else if is required and has string length of 0
 			return 'field required';
 		}
 		
 		if (definition.hasOwnProperty('type')) {
 			//else if is present check that data parses with supplied type to produce snesible result
 			//write new function for this in validation-rules
-			if (!validationRules.checkVarParsesType(definition.type(), record)) {
-				return definition.type.toString().match(/function\ ([A-Za-z0-9]+)/)[1] + ' expected';
+			var _type = definition.type.toString().match(/function\ ([A-Za-z0-9]+)/)[1];
+			if (!validationRules.checkVarParsesType(_type, record)) {
+				return _type + ' expected';
 			}
 		}
 		
@@ -67,8 +66,8 @@
 		
 		parse(this.schema.definition, data);
 			
-		//return error array
-		return errors;
+		//return error array if errors, otherwise nothing
+		if (errors.length) return errors;
 	};
 
 })(typeof exports === 'undefined'? this['validation']={}: exports);

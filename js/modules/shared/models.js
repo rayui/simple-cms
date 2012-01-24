@@ -47,7 +47,10 @@
 			}
 		},
 		process: function(data) {
-			return data;
+			return {
+				id: 2,
+				name: 'ray'
+			};
 		}
 	}
 

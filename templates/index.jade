@@ -5,9 +5,12 @@ body
 	#header
 		h1 simple-cms
 		#page
+			label(for="id") Id
 			input#id(type="text", name="id")
+			label(for="name") Name
 			input#name(type="text", name="name")
 			input(type="submit")
+		#model
 		#errors
 			a(href="/config") View the config
 

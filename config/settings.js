@@ -82,7 +82,7 @@ var dev = {
 						'Content-Type':'text/html'
 					}	
 				},
-				model: 'Default',
+				model: 'User',
 				template: 'index'
 			},
 			{
@@ -112,7 +112,7 @@ var dev = {
 						'Content-Type':String(headers['content-type']).indexOf('json') >= 0 ? 'application/json' : 'text/html'
 					}
 				},
-				model: 'Default',
+				model: 'User',
 				template: 'index'
 			}
 		]

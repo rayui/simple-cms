@@ -118,7 +118,7 @@ exports.webServer = function(_settings){
 			}
 		};
 			
-		app.post(new RegExp(_route.regex), utilities.callback(router, {args:[_route], scope:this}));
+		app.put(new RegExp(_route.regex), utilities.callback(router, {args:[_route], scope:this}));
 	};
 		
 	//create express server with browserify

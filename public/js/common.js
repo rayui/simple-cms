@@ -13,7 +13,8 @@ $(function($){
 		
 		//- default events
 		events:{
-			'click input[type="submit"]':		'submit'
+			'click input[type="submit"]':		'submit',
+			'change input[type="text"]':		'update'
 		},
 
 		//- renders and error notification
@@ -31,23 +32,19 @@ $(function($){
 			$('div#errors').empty();
 		},
 		
+		update: function() {
+			var success = this.model.set({
+				id:$('input[name="id"]').val(),
+				name:$('input[name="name"]').val()
+			});
+			success ? $('input[type="submit"]').attr('disabled', false) : $('input[type="submit"]').attr('disabled', true);
+		},
+		
 		//- when inputs change, save the model to the server
 		//- if it fails validation, the error function will kick in
 		//- when a success response is received, this will trigger the model's change event and causing it to render
-		submit:function() {	
-			var renderError = this.renderError;
-			var clearErrors = this.clearErrors;
-			
-			this.model.set({
-				id:$('#id').val(),
-				name:$('#name').val()
-			});
-
-			this.model.save(null, {
-				error: function(model, errors) {
-
-				}
-			});
+		submit:function(e) {
+			this.model.save();
 			
 			return false;
 		},
@@ -55,12 +52,10 @@ $(function($){
 		//- render result on server response
 		render: function() {
 			this.clearErrors();
-			$('div#error').text(
+			$('div#model').text(
 				this.model.get('id') +
-				' * ' +
-				this.model.get('name') +
-				' = ' +
-				this.model.get('result')
+				': ' +
+				this.model.get('name')
 			);
 		},
 		
@@ -70,8 +65,8 @@ $(function($){
 			//-- note that this is backbone's bind, different from jQuery
 			this.model = new Model();
 			this.model.schema = models.User.schema;
-			this.model.bind('change', this.render, this);
 			this.model.bind('error', this.renderErrors, this);
+			this.model.bind('change', this.render, this);
 		}
 	});
 	

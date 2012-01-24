@@ -9,37 +9,45 @@
 	}
 
 	var checkVarParsesType = function(type, value) {
-		switch (typeof type) {
-			case 'string':
+		//if true, we return
+		//we are not testing for required value so undefined is okay
+		//we leave type conversion til later
+		
+		if (typeof value === 'undefined') {
+			return true;
+		}
+		
+		switch (type) {
+			case 'String':
 				if (new String(value).toString() === value) {
 					return true;
 				}
 				break;
-			case 'number':
+			case 'Number':
 				if (new Number(value).toString() !== 'NaN') {
 					return true;
 				}
 				break;
-			case 'date':
+			case 'Date':
 				if (new Date(value).toString() !== 'Invalid Date') {
 					return true;
 				}
 				break;
-			case 'boolean':
+			case 'Boolean':
 				if (value.toString() === 'true' || value.toString() === 'false') {
 					return true;
 				}
 				break;
-			case 'buffer':
+			case 'Buffer':
 				//to write
 				break;
-			case 'objectid':
+			case 'ObjectId':
 				//to write
 				break;
-			case 'mixed':
+			case 'Mixed':
 				//to write
 				break;
-			case 'array':
+			case 'Array':
 				if (value.constructor.toString().indexOf('Array') >= 0) {
 					return true;
 				}	
