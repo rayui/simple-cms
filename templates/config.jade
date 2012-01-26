@@ -39,4 +39,4 @@ body.config
                     tr
                         td.key
                             em= attr + ': '
-                        td.value= models[model][attr].toString()
+                        td.value= JSON.stringify(models[model][attr]) || models[model][attr].toString() 

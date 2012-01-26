@@ -70,71 +70,63 @@ exports.webServer = function(_settings){
 			res.header(header, headers[header]);
 		}
 		res.end(data, http_code);
-	}
-	
-	function getRoute(_route) {
-		var router = function(req, res, next, route) {
-			switch (route.type) {
-				case '302':
-					var headers = route.headers(req.headers, req.params);
-					res.redirect(headers['Location']);
-					break;
-				case '404':
-					var template = settings.options['template_dir'] + '/404.jade';
-					serveError(404, {}, utilities.callback(sendResponse, {args:[{'Content-Type':'text/html'},res]}));
-					break;
-				case 'static':
-					var headers = route.headers(req.headers, req.params);
-					var path = route.path(req.params);
-					serveStatic(path, utilities.callback(sendResponse, {args:[headers,res]}));
-					break;
-				case 'dynamic':
-				default:
-					var headers = route.headers(req.headers, req.params);
-					var data = utilities.callFunctionByName(route.model + '.process', models, req.params);
-					var template = settings.options['template_dir'] + '/' + route['template'] + '.jade';
-					serveHTML(data, template, utilities.callback(sendResponse, {args:[headers,res]}));
-			}	
-		};
-		
-		app.get(new RegExp(_route.regex), utilities.callback(router, {args:[_route], scope:this}));
 	};
 	
-	function postRoute(_route) {
-		var router = function(req, res, next, route) {
-			var headers = route.headers(req.headers);
-			var data = utilities.callFunctionByName(route.model + '.process', models, req.body);
-			
-			//choose our render method based on request content type
-			switch (headers['Content-Type']) {
-				case 'application/json':
-					res.json(data, 200);
-					break;
-				case 'text/html':
-				default:
-					var template = settings.options['template_dir'] + '/' + route['template'] + '.jade';
-					serveHTML(data, template, utilities.callback(sendResponse, {args:[headers,res]}));
-					break;
-			}
-		};
-			
-		app.put(new RegExp(_route.regex), utilities.callback(router, {args:[_route], scope:this}));
-	};
+	function requestHandler(req, res, next, route) {
+		var headers = route.headers(req.headers, req.params);
 		
-	//create express server with browserify
-	var app = express.createServer();
+		//choose our render method based on request content type
+		switch (headers['Content-Type']) {
+			case 'application/json':
+				var data = utilities.callFunctionByName(route.model + '.process', models, req.body);
+				res.json(data, 200);
+				break;
+			case 'text/html':
+			default:
+				switch (route.type) {
+					case '302':
+						var headers = route.headers(req.headers, req.params);
+						res.redirect(headers['Location']);
+						break;
+					case '404':
+						var template = settings.options['template_dir'] + '/404.jade';
+						serveError(404, {}, utilities.callback(sendResponse, {args:[{'Content-Type':'text/html'},res]}));
+						break;
+					case 'static':
+						var headers = route.headers(req.headers, req.params);
+						var path = route.path(req.params);
+						serveStatic(path, utilities.callback(sendResponse, {args:[headers,res]}));
+						break;
+					case 'dynamic':
+					default:
+						//use model to generate response data for route
+						//need some kind of error checking in here in case model process function fails
+						var data = utilities.callFunctionByName(route.model + '.process', models, req.body);
+						var template = settings.options['template_dir'] + '/' + route['template'] + '.jade';
+						serveHTML(data, template, utilities.callback(sendResponse, {args:[headers,res]}));
+						break;
+				}
+				break;
+		}
+	};
 	
-	//extend default options
+	//extend default options	
 	_.extend(settings, _settings);
-    
-	//configure express app
+	
+	//create express server and configure
+	var app = express.createServer();    
 	app.configure(function(){
 		app.use(express.bodyParser());
 	});
 		
 	//set up routing loop
+	//to pick our express method dynamically
+	
 	for (var i in settings.routing) {
-		settings.routing[i].method === 'get' ? new getRoute(settings.routing[i]) : new postRoute(settings.routing[i]);
+		var route = settings.routing[i];
+		for (method in route.methods) {
+			app[route.methods[method]](new RegExp(route.regex), utilities.callback(requestHandler, {args:[route], scope:this}));
+		}
 	}
 	
 	//get app to listen to requests

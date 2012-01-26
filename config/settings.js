@@ -8,7 +8,7 @@ var dev = {
 			{
 				regex:'^\\/css\\/(\\w+\\.css)?',
 				type:'static',
-				method:'get',
+				methods:['get'],
 				headers:function(headers, params) {
 					return {
 						'Content-Type':'text/css'
@@ -21,7 +21,7 @@ var dev = {
 			{
 				regex:'^(\\/js(\\/lib)?(\\/[\\w\\-\\.]+\\.js))',
 				type:'static',
-				method:'get',
+				methods:['get'],
 				headers: function(headers, params) {
 					return {
 						'Content-Type':'application/javascript'
@@ -34,7 +34,7 @@ var dev = {
 			{
 				regex:'^\\/js\\/shared(\\/[\\w\\-\\.]+\\.js)',
 				type:'static',
-				method:'get',
+				methods:['get'],
 				headers: function(headers, params) {
 					return {
 						'Content-Type':'application/javascript'
@@ -47,7 +47,7 @@ var dev = {
 			{
 				regex:'^\\/docs\\/([\\w\\-\\.]+\\.(css|html))?$',
 				type:'static',
-				method:'get',
+				methods:['get'],
 				headers: function(headers, params) {
 					return {
 						'Content-Type':'text/' + (params[1] === 'css' ? 'css' : 'html')
@@ -64,7 +64,7 @@ var dev = {
 			{
 				regex:'^\\/config/$',
 				type:'dynamic',
-				method:'get',
+				methods:['get'],
 				headers: function(headers, params) {
 					return {
 						'Content-Type':'text/html'
@@ -76,11 +76,11 @@ var dev = {
 			{
 				regex:'^\\/$',
 				type:'dynamic',
-				method:'get',
-				headers: function(headers, params) {
+				methods:['get','put','post','delete'],
+				headers:function(headers, params) {
 					return {
-						'Content-Type':'text/html'
-					}	
+						'Content-Type':String(headers['content-type']).indexOf('json') >= 0 ? 'application/json' : 'text/html'
+					}
 				},
 				model: 'User',
 				template: 'index'
@@ -88,7 +88,7 @@ var dev = {
 			{
 				regex:'^(\\/[\\w\\-\\.]+)$',
 				type:'302',
-				method:'get',
+				methods:['get'],
 				headers:function(headers, params) {
 					return {
 						'Location':params[0] + '/'
@@ -98,22 +98,11 @@ var dev = {
 			},	
 			{
 				regex:'^.*?',
-				method:'get',
+				methods:['get'],
 				type:'404',
 				headers:function(headers, params) {
 					return {}
 				}
-			},
-			{
-				regex:'\\/',
-				method:'post',
-				headers:function(headers, params) {
-					return {
-						'Content-Type':String(headers['content-type']).indexOf('json') >= 0 ? 'application/json' : 'text/html'
-					}
-				},
-				model: 'User',
-				template: 'index'
 			}
 		]
 	}
