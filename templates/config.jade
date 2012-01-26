@@ -27,7 +27,7 @@ body.config
                         tr
                             td.key
                                 em= attr + ': '
-                            td.value= settings.routing[key][attr].toString()
+                            td.value= JSON.stringify(settings.routing[key][attr]) || settings.routing[key][attr].toString()
         h2 Models               
         - for (var model in models)
             h3= model

@@ -36,7 +36,7 @@
 	//validate inputs and perform multiplication
 	exports.User = {
 		schema: {
-			name: 'Default',
+			name: 'User',
 			definition: {
 				id: {type: Number, index:true, required: true, validate:[validationRules.isEven, 'Must be an even number']},
 				name: {type: String, required: true},

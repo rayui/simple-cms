@@ -85,7 +85,6 @@ exports.webServer = function(_settings){
 			default:
 				switch (route.type) {
 					case '302':
-						var headers = route.headers(req.headers, req.params);
 						res.redirect(headers['Location']);
 						break;
 					case '404':
@@ -93,7 +92,6 @@ exports.webServer = function(_settings){
 						serveError(404, {}, utilities.callback(sendResponse, {args:[{'Content-Type':'text/html'},res]}));
 						break;
 					case 'static':
-						var headers = route.headers(req.headers, req.params);
 						var path = route.path(req.params);
 						serveStatic(path, utilities.callback(sendResponse, {args:[headers,res]}));
 						break;
