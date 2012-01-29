@@ -32,9 +32,17 @@
 		
 		var errors = [];
 		
+		function validate(def, data) {
+			var error = validation.validateRecord(def, data);
+			if (error) {
+				//push to error array
+				errors.push({name:key,error:error});
+			}
+		};
+		
 		function parse(definition, _data) {
 			_data = _data || {};
-			//for each keyin schema definition
+			//for each key in schema definition
 			for (key in definition) {
 				var def = definition[key];
 				var kt = def.constructor.toString();
@@ -42,11 +50,7 @@
 				if (kt.indexOf('Array') >= 0 && _data.hasOwnProperty(key)) {
 					//if the definition contructor is an array validate each object in _data is of the type specified at index 0 in the array					
 					for (record in _data[key]) {
-						var error = validation.validateRecord({type:def[0]}, _data[key][record]);
-						if (error) {
-							//push to error array
-							errors.push({name:key + ':' + record,error:error});
-						}
+						validate({type:def[0]}, _data[key][record]);
 					}
 					
 				} else if (kt.indexOf('Object') >= 0 && typeof(def.type) === 'undefined') {
@@ -55,11 +59,7 @@
 				} else {
 					//else we validate it
 					//if data doesn't conform to type
-					var error = validation.validateRecord(def, _data[key]);
-					if (error) {
-						//push to error array
-						errors.push({name:key,error:error});
-					}
+					validate(def, _data[key]);
 				}
 			}
 		};

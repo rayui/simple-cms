@@ -64,7 +64,7 @@ $(function($){
 			//-- instantiate Model inside View and bind new model's change event to this View's render method
 			//-- note that this is backbone's bind, different from jQuery
 			this.model = new Model();
-			this.model.schema = models.User.schema;
+			this.model.schema = schemas.User;
 			this.model.bind('error', this.renderErrors, this);
 			this.model.bind('change', this.render, this);
 		}

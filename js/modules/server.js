@@ -4,7 +4,7 @@ var _ = require('underscore')._,
 	express = require('express'),
 	jade = require('jade'),
 	utilities = require('./shared/utilities'),
-	models = require('./shared/models');	
+	models = require('./models');	
 	
 //set up server model
 exports.webServer = function(_settings){
@@ -69,7 +69,9 @@ exports.webServer = function(_settings){
 		for (header in headers) {
 			res.header(header, headers[header]);
 		}
-		res.end(data, http_code);
+		res.statusCode = http_code;
+		res.write(data);
+		res.end();
 	};
 	
 	function requestHandler(req, res, next, route) {
@@ -78,7 +80,7 @@ exports.webServer = function(_settings){
 		//choose our render method based on request content type
 		switch (headers['Content-Type']) {
 			case 'application/json':
-				var data = utilities.callFunctionByName(route.model + '.process', models, req.body);
+				var data = utilities.callFunctionByName(route.model + '.' + req.method.toString().toLowerCase(), models, req.body);
 				res.json(data, 200);
 				break;
 			case 'text/html':
@@ -99,7 +101,7 @@ exports.webServer = function(_settings){
 					default:
 						//use model to generate response data for route
 						//need some kind of error checking in here in case model process function fails
-						var data = utilities.callFunctionByName(route.model + '.process', models, req.body);
+						var data = utilities.callFunctionByName(route.model + '.' + req.method.toString().toLowerCase(), models, req.body);
 						var template = settings.options['template_dir'] + '/' + route['template'] + '.jade';
 						serveHTML(data, template, utilities.callback(sendResponse, {args:[headers,res]}));
 						break;

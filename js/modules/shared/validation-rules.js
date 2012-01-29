@@ -3,9 +3,10 @@
 
 (function(exports){
 	try {
-		var _ = require('underscore');
+		var _ = require('undescore'),
+			server = true;
 	} catch(err) {
-
+		var server = false;
 	}
 
 	var checkVarParsesType = function(type, value) {

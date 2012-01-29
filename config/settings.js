@@ -105,5 +105,11 @@ var dev = {
 				}
 			}
 		]
+	},
+	database:{
+		options:{
+			host:'localhost',
+			database:'test'
+		}
 	}
 };
