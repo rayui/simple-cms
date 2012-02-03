@@ -10,7 +10,7 @@ var _ = require('underscore')._,
 	var sessions = [];
 	
 //set up server model
-var Server = function(_settings){
+var Handler = function(_settings){
 
 	events.EventEmitter.call(this);
 	
@@ -21,19 +21,19 @@ var Server = function(_settings){
 
 };
 
-Server.super = events.EventEmitter;
-Server.prototype = Object.create(events.EventEmitter.prototype, {
+Handler.super = events.EventEmitter;
+Handler.prototype = Object.create(events.EventEmitter.prototype, {
     constructor: {
-        value: Server,
+        value: Handler,
         enumerable: false
     }
 });
 
-Server.prototype.createSession = function() {
+Handler.prototype.createSession = function() {
 	//creates new session object in sessions
 	//returns object
-	var md5sum = new crypto.createHash('sha1');
-	md5sum.update(arguments.toString());
+	var md5sum = new crypto.createHash('md5');
+	md5sum.update(new Date().getTime().toString());
 	
 	var sessionId = md5sum.digest('base64');
 	sessions[sessionId] = {models:{}};
@@ -41,21 +41,21 @@ Server.prototype.createSession = function() {
 	return sessionId;
 };
 
-Server.prototype.getSession = function(sessionId) {
+Handler.prototype.getSession = function(sessionId) {
 	//if session with key md5 exists return it
 	//else return undefined
 	return sessions[sessionId];
 };
 
-Server.prototype.createModel = function(sessionId, modelName) {
+Handler.prototype.createModel = function(sessionId, modelName) {
 	var that = this;
 	var m = sessions[sessionId]['models'][modelName] = new model.Model(modelName);
 	
 	return m;
 };
 
-Server.prototype.query = function(m) {
+Handler.prototype.query = function(m) {
 	var that = this;
 };
 
-exports.Server = Server;
+exports.Handler = Handler;

@@ -106,12 +106,13 @@ var Server = function(_settings){
 				
 				//get or create a session
 				if (!sessionId) {
-					sessionId = ss.createSession(new Date().getTime());
+					sessionId = sessionHandler.createSession();
 					req.session.sessionId = sessionId;
 				}
 				
-				if (!ss.getSession(sessionId)[route.model]) {
-					m = ss.createModel(req.session.sessionId, route.model);
+				//get or create the model for this route
+				if (!sessionHandler.getSession(sessionId)[route.model]) {
+					m = sessionHandler.createModel(req.session.sessionId, route.model);
 					m.on('db:query', function(query, fields, _callback) {
 						that.emit('db:query', m.schema.name, query, fields, _callback);
 					});
@@ -119,8 +120,6 @@ var Server = function(_settings){
 				
 				headers['Content-Type'] === 'application/json' ? m.ready(sendJSON) : m.ready(sendHTML);
 				m[req.method.toString().toLowerCase()](req.body);
-				
-				console.log(sessionId);
 				
 				break;
 		}
@@ -131,7 +130,7 @@ var Server = function(_settings){
 	
 	//create express server and configure
 	var app = express.createServer();    
-	var ss = new sessions.Server(settings.sessions);
+	var sessionHandler = new sessions.Handler(settings.sessions);
 	
 	app.configure(function(){
 		app.use(express.bodyParser());
