@@ -15,9 +15,10 @@ var Model = function(name) {
 	//mix in model actions
 	_.extend(this, models[name]);
 	events.EventEmitter.call(this);
-
 	return this;
 };
+
+var onReady = 
 
 Model.super = events.EventEmitter;
 Model.prototype = Object.create(events.EventEmitter.prototype, {
@@ -27,14 +28,19 @@ Model.prototype = Object.create(events.EventEmitter.prototype, {
     }
 });
 
-Model.prototype.ready = function(callback) {
+Model.prototype.onReady = function(callback) {
+	this.removeAllListeners('model:ready');
 	this.on('model:ready', function(data) {
+		//send back an empty model if null result
 		callback.call(callback, data);
 	});
 };
 
 Model.prototype.query = function(query, fields, callback) {
-	this.emit('db:query', query, fields, callback);
+	this.emit('db:query', this.schema.name, query, fields, function(data) {
+		data = data || {};
+		callback.call(this, data);
+	});
 };
 
 Model.prototype.end = function(data) {

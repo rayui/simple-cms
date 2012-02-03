@@ -44,7 +44,7 @@ Database.prototype = Object.create(events.EventEmitter.prototype, {
 Database.prototype.query = function(schemaName, query, fields, callback) {
 	var schema = new mongoose.Schema(schemas[schemaName].definition);
 	var model = this.db.model(schemaName, schema);
-	callback.call(callback, model);
+	var results = model.find(query, fields, callback);
 };
 
 exports.Database = Database;

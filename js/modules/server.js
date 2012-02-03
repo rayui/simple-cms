@@ -8,7 +8,7 @@ var _ = require('underscore')._,
 	sessions = require('./sessions');
 	
 //set up server model
-var Server = function(_settings){
+var Server = function(_settings){		
 	//default settings
 	var settings = {
 		options:{
@@ -52,7 +52,6 @@ var Server = function(_settings){
 	
 	//renders a chunk of markup to the response object
 	function serveHTML(data, template, callback) {
-	    data.settings = settings
 		jade.renderFile(__dirname + template, data, function(err,html) {
 			if (err) {
 			    data.err = err;
@@ -80,12 +79,16 @@ var Server = function(_settings){
 		var headers = route.headers(req.headers, req.params);
 
 		function sendJSON(data) {
-			res.json(data, 200);	
+			res.json(data, 200);
 		};
 		
 		function sendHTML(data) {
 			var template = settings.options['template_dir'] + '/' + route['template'] + '.jade';
 			serveHTML(data, template, utilities.callback(sendResponse, {args:[headers,res]}));
+		};
+		
+		function queryDB(schemaName, query, fields, callback) {
+			that.emit('db:query', schemaName, query, fields, callback);
 		};
 		
 		switch (route.type) {
@@ -102,23 +105,26 @@ var Server = function(_settings){
 				break;
 			case 'dynamic':
 			default:
-				var sessionId = req.session.sessionId;
+				var sessionId = req.session.id,
+					session = sessionHandler.getSession(sessionId);
 				
 				//get or create a session
-				if (!sessionId) {
-					sessionId = sessionHandler.createSession();
-					req.session.sessionId = sessionId;
+				if (!session) {
+					session = sessionHandler.createSession(sessionId);
 				}
 				
-				//get or create the model for this route
-				if (!sessionHandler.getSession(sessionId)[route.model]) {
-					m = sessionHandler.createModel(req.session.sessionId, route.model);
-					m.on('db:query', function(query, fields, _callback) {
-						that.emit('db:query', m.schema.name, query, fields, _callback);
-					});
+				var m = session.models[route.model];
+				
+				if (!m) {
+					//get or create the model for this route
+					m = sessionHandler.createModel(sessionId, route.model);
+					m.on('db:query', queryDB);
 				}
 				
-				headers['Content-Type'] === 'application/json' ? m.ready(sendJSON) : m.ready(sendHTML);
+				//bind response callbacks based on request type
+				headers['Content-Type'] === 'application/json' ? m.onReady(sendJSON) : m.onReady(sendHTML);
+				
+				//get the model ready
 				m[req.method.toString().toLowerCase()](req.body);
 				
 				break;

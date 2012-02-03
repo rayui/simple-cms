@@ -28,12 +28,12 @@ models.User = {
 	get: function(body) {
 		var that = this;
 		
-		/*this.query({}, [], function(_data) {
-			console.log(_data);
-			that.end(that.data);
-		});*/
+		this.query({}, [], function(_data) {
+			//clone it! do not take a reference
+			that.data = _.extend({},_data);
+			that.end(_data);
+		});
 		
-		this.end(this.data);
 	},
 	post:function(body) {
 		this.data.id = body.id;

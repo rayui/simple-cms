@@ -29,16 +29,12 @@ Handler.prototype = Object.create(events.EventEmitter.prototype, {
     }
 });
 
-Handler.prototype.createSession = function() {
+Handler.prototype.createSession = function(sessionId) {
 	//creates new session object in sessions
 	//returns object
-	var md5sum = new crypto.createHash('md5');
-	md5sum.update(new Date().getTime().toString());
-	
-	var sessionId = md5sum.digest('base64');
 	sessions[sessionId] = {models:{}};
 	
-	return sessionId;
+	return sessions[sessionId];
 };
 
 Handler.prototype.destroySession = function(sessionId) {
@@ -55,7 +51,8 @@ Handler.prototype.getSession = function(sessionId) {
 
 Handler.prototype.createModel = function(sessionId, modelName) {
 	var that = this;
-	var m = sessions[sessionId]['models'][modelName] = new model.Model(modelName);
+	var m = new model.Model(modelName);
+	sessions[sessionId]['models'][modelName] = m;
 	
 	return m;
 };

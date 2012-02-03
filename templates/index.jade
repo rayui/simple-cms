@@ -10,7 +10,8 @@ body
 			label(for="name") Name
 			input#name(type="text", name="name")
 			input(type="submit")
-		#model #{id}: #{name}
+		if(typeof id !== 'undefined' && typeof name !== 'undefined')
+			#model #{id}: #{name}
 		#errors
 			a(href="/config") View the config
 
