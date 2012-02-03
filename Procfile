@@ -1,1 +1,1 @@
-web: node js/app.js --env=dev --ac_config=config/settings.js
+web: node js/simple-cms.js --env=dev --ac_config=config/settings.js

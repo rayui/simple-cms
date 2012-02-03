@@ -1,43 +1,53 @@
-//data models
+//default model passes back contents of request body (headers and request parameters)
 var _ = require('underscore')._,
-	schemas = require('./shared/schemas.js');
+	schemas = require('./shared/schemas.js'),
+	models = exports;
 
-//default empty model
-exports.Default = {
+models.Default = {
 	schema: schemas.Default,
-	get: function(data) {
-		return data;
+	get: function(body) {
+		this.end({});
+		end
 	}
-}
-		
-//validate inputs and perform multiplication
-exports.Config = {
+};
+			
+models.Config = {
 	schema: schemas.Config,
-	get: function(data) {
-		var data = _.extend(data, {models:exports})
-		return data;
+	get: function(body) {
+		var data = _.extend(body, {models:models});
+		this.end(data);
 	}
-}
-
-//validate inputs and perform multiplication
-exports.User = {
+};
+	
+models.User = {
 	schema: schemas.User,
-	get: function(data) {
-		return {};
+	get: function(body) {
+		var that = this,
+			data = {
+				id:2,
+				name:'ray'
+			};
+
+		this.query({}, [], function(_data) {
+			console.log(_data);
+			that.end(data);
+		});
 	},
-	post:function(data) {
-		return {
+	post:function(body) {
+		var data = {
 			id:2,
 			name:'ray'
 		};
+		this.end(data);
 	},
-	put:function(data) {
-		return {
+	put:function(body) {
+		var data = {
 			id:2,
 			name:'ray'
 		};
+		this.end(data);
 	},
-	delete:function(data) {
-		return {};	
+	delete:function(body) {
+		this.end({});
 	}
-}
+};

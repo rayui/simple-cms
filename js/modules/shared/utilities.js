@@ -58,4 +58,7 @@
 		return context[func].apply(this, args);
 	}
 
+	//return a unique id	
+	exports.id = (function() {var id=0;return function() {if (arguments[0]==0) {id=0;return 1;} else return id++;}})();
+
 })(typeof exports === 'undefined'? this['utilities']={}: exports);

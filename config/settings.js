@@ -1,5 +1,5 @@
 var dev = {
-	webServer:{
+	webserver:{
 		options:{
 			port:8000,
 			template_dir:'/../../templates'
@@ -104,7 +104,8 @@ var dev = {
 					return {}
 				}
 			}
-		]
+		],
+		sessions:{}
 	},
 	database:{
 		options:{
