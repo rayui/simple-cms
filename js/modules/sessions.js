@@ -41,6 +41,12 @@ Handler.prototype.createSession = function() {
 	return sessionId;
 };
 
+Handler.prototype.destroySession = function(sessionId) {
+	//destroys session
+	delete sessions[sessionId];
+};
+
+
 Handler.prototype.getSession = function(sessionId) {
 	//if session with key md5 exists return it
 	//else return undefined

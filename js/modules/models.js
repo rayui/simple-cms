@@ -18,34 +18,32 @@ models.Config = {
 		this.end(data);
 	}
 };
-	
+
 models.User = {
+	data:{
+		id:"",
+		name:""
+	},
 	schema: schemas.User,
 	get: function(body) {
-		var that = this,
-			data = {
-				id:2,
-				name:'ray'
-			};
-
-		this.query({}, [], function(_data) {
+		var that = this;
+		
+		/*this.query({}, [], function(_data) {
 			console.log(_data);
-			that.end(data);
-		});
+			that.end(that.data);
+		});*/
+		
+		this.end(this.data);
 	},
 	post:function(body) {
-		var data = {
-			id:2,
-			name:'ray'
-		};
-		this.end(data);
+		this.data.id = body.id;
+		this.data.name = body.name;
+		this.end(this.data);
 	},
 	put:function(body) {
-		var data = {
-			id:2,
-			name:'ray'
-		};
-		this.end(data);
+		this.data.id = body.id;
+		this.data.name = body.name;
+		this.end(this.data);
 	},
 	delete:function(body) {
 		this.end({});

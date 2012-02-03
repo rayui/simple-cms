@@ -10,7 +10,7 @@ body
 			label(for="name") Name
 			input#name(type="text", name="name")
 			input(type="submit")
-		#model
+		#model #{id}: #{name}
 		#errors
 			a(href="/config") View the config
 
