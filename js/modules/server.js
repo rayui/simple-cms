@@ -5,8 +5,9 @@ var _ = require('underscore')._,
 	express = require('express'),
 	jade = require('jade'),
 	utilities = require('./shared/utilities'),
+	database = require('./db'),
 	sessions = require('./sessions');
-	
+
 //set up server model
 var Server = function(_settings){		
 	//default settings
@@ -87,10 +88,6 @@ var Server = function(_settings){
 			serveHTML(data, template, utilities.callback(sendResponse, {args:[headers,res]}));
 		};
 		
-		function queryDB(schemaName, query, fields, callback) {
-			that.emit('db:query', schemaName, query, fields, callback);
-		};
-		
 		switch (route.type) {
 			case '302':
 				res.redirect(headers['Location']);
@@ -118,7 +115,8 @@ var Server = function(_settings){
 				if (!m) {
 					//get or create the model for this route
 					m = sessionHandler.createModel(sessionId, route.model);
-					m.on('db:query', queryDB);
+					m.on('db:fetch', utilities.callback(db.fetch, {scope:db}));
+					m.on('db:update', utilities.callback(db.update, {scope:db}));
 				}
 				
 				//bind response callbacks based on request type
@@ -135,8 +133,11 @@ var Server = function(_settings){
 	_.extend(settings, _settings);
 	
 	//create express server and configure
-	var app = express.createServer();    
-	var sessionHandler = new sessions.Handler(settings.sessions);
+	var app = express.createServer(),
+		db = new database.Database(settings.database),
+		sessionHandler = new sessions.Handler(settings.sessions),
+		appPort = process.env.PORT || parseInt(settings.options['port'], 10)
+	
 	
 	app.configure(function(){
 		app.use(express.bodyParser());
@@ -155,12 +156,12 @@ var Server = function(_settings){
 	}
 	
 	//get app to listen to requests
-	app.listen(process.env.PORT || parseInt(settings.options['port'], 10));
+	app.listen(appPort);
 
 	events.EventEmitter.call(this);
 	
 	//confirm app is running
-	console.log("Web server started at " + settings.options['port']);
+	console.log("Web server started at " + appPort);
 	
 	return this;
 

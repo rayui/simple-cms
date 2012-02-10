@@ -1,3 +1,7 @@
+# DISCLAIMER
+
+## This software is experimental and under development. In no way can it be considered a finished product.
+
 # A simple CMS written in Node JS 
 
 ## To install all the requirements:
@@ -11,9 +15,13 @@
 * npm install optimist
 * npm install docco
 
-Docco requires Pygments. On Debian based systems you can install this with the following command:
+Docco requires Pygments. On Debian based systems you can install these with the following command:
 
-sudo aptitude install python-pygments
+* sudo aptitude install python-pygments
+
+You will also require Foreman if you wish to start the process using the Procfile. Foreman comes as part of the Heroku toolbelt. Please see here for further information:
+
+* http://devcenter.heroku.com/articles/procfile  
 
 ## To generate the documentation do this:
 
@@ -22,7 +30,11 @@ sudo aptitude install python-pygments
 
 ## To start the server:
 
-* node js/app.js
+* node js/simple-cms.js --env=dev --ac_config=config/settings.js
+
+### or with Foreman:
+
+* foreman start
 
 ## To access the app:
 
@@ -39,4 +51,4 @@ sudo aptitude install python-pygments
 ## Heroku ready!
 
 * Set up a new Heroku app 
-* git push heroku master 
+* git push heroku master

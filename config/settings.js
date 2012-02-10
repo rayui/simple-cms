@@ -105,12 +105,12 @@ var dev = {
 				}
 			}
 		],
-		sessions:{}
-	},
-	database:{
-		options:{
-			host:'localhost',
-			database:'test'
+		sessions:{},
+		database:{
+			options:{
+				host:'localhost',
+				database:'test'
+			}
 		}
 	}
 };

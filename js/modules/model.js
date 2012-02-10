@@ -1,7 +1,8 @@
 //page model
 //- data model functionality
 //- emits events
-//-- 'model:query' - needs data
+//-- 'db:fetch' - needs data
+//-- 'db:update' - sends data
 //-- 'mode:ready' - ready to render
 
 //processes requests from server
@@ -18,8 +19,6 @@ var Model = function(name) {
 	return this;
 };
 
-var onReady = 
-
 Model.super = events.EventEmitter;
 Model.prototype = Object.create(events.EventEmitter.prototype, {
     constructor: {
@@ -29,18 +28,22 @@ Model.prototype = Object.create(events.EventEmitter.prototype, {
 });
 
 Model.prototype.onReady = function(callback) {
-	this.removeAllListeners('model:ready');
-	this.on('model:ready', function(data) {
+	this.once('model:ready', function(data) {
 		//send back an empty model if null result
 		callback.call(callback, data);
 	});
 };
 
-Model.prototype.query = function(query, fields, callback) {
-	this.emit('db:query', this.schema.name, query, fields, function(data) {
+Model.prototype.fetch = function(query, fields, callback) {
+	this.emit('db:fetch', this.schema.name, query, fields, function(data) {
 		data = data || {};
-		callback.call(this, data);
+		//clone it! do not take a reference or all the sessions will reference the same object
+		callback.call(this, _.extend({},data));
 	});
+};
+
+Model.prototype.update = function(conditions, update, options, callback) {
+	
 };
 
 Model.prototype.end = function(data) {

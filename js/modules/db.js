@@ -28,6 +28,9 @@ var Database = function(_settings) {
 	this.db.connection.on('open', onOpen);
 	this.db.connection.on('error', onError);
 	
+	_.bind(this.fetch, this);
+	_.bind(this.update, this);
+	
 	events.EventEmitter.call(this);
 
 	return this;
@@ -41,10 +44,17 @@ Database.prototype = Object.create(events.EventEmitter.prototype, {
     }
 });
 
-Database.prototype.query = function(schemaName, query, fields, callback) {
+Database.prototype.fetch = function(schemaName, query, fields, callback) {
 	var schema = new mongoose.Schema(schemas[schemaName].definition);
 	var model = this.db.model(schemaName, schema);
 	var results = model.find(query, fields, callback);
 };
+
+Database.prototype.update = function(schemaName, query, fields, callback) {
+	/*var schema = new mongoose.Schema(schemas[schemaName].definition);
+	var model = this.db.model(schemaName, schema);
+	var results = model.update(query, fields, callback);*/
+};
+
 
 exports.Database = Database;
