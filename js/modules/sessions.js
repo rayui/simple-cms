@@ -39,6 +39,7 @@ Handler.prototype.createSession = function(sessionId) {
 
 Handler.prototype.destroySession = function(sessionId) {
 	//destroys session
+	//should be called when user logs out/session cookie times out
 	delete sessions[sessionId];
 };
 

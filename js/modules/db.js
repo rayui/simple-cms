@@ -8,14 +8,16 @@ var _ = require('underscore')._,
 var Database = function(_settings) {
 	//default settings
 	var settings = {
-		options:{},
-		path:function() {
-			return 'mongodb://' + settings.options.host + '/' + settings.options.database;
-		}
+		options:{}
 	};
 	
 	var onOpen = function() {
-		console.log('Connected to database ' + settings.path());
+		console.log('Connected to database ' + settings.options.database + ' on ' + settings.options.host + ':' + settings.options.port + ', registering schemas...');
+		for (schema in schemas) {
+			var s = new mongoose.Schema(schemas[schema].definition);
+			mongoose.model(schemas[schema].name, s);
+			console.log('- ' + schemas[schema].name);
+		}
 	};
 	
 	var onError = function(err) {
@@ -24,12 +26,13 @@ var Database = function(_settings) {
 	
 	_.extend(settings, _settings);
 		
-	this.db = mongoose.connect(settings.path());
+	this.db = mongoose.connect(settings.options.host, settings.options.database, settings.options.port);
 	this.db.connection.on('open', onOpen);
 	this.db.connection.on('error', onError);
 	
 	_.bind(this.fetch, this);
 	_.bind(this.update, this);
+	_.bind(onOpen, this);
 	
 	events.EventEmitter.call(this);
 
@@ -45,15 +48,25 @@ Database.prototype = Object.create(events.EventEmitter.prototype, {
 });
 
 Database.prototype.fetch = function(schemaName, query, fields, callback) {
-	var schema = new mongoose.Schema(schemas[schemaName].definition);
-	var model = this.db.model(schemaName, schema);
-	var results = model.find(query, fields, callback);
+	var model = mongoose.model(schemaName);
+	model.find(query, fields, function(err, data) {
+		//error handling!!
+		callback.call(callback, data);
+	});
 };
 
-Database.prototype.update = function(schemaName, query, fields, callback) {
-	/*var schema = new mongoose.Schema(schemas[schemaName].definition);
-	var model = this.db.model(schemaName, schema);
-	var results = model.update(query, fields, callback);*/
+Database.prototype.update = function(schemaName, conditions, update, callback) {
+	var model = mongoose.model(schemaName);
+	var m = new model();
+	_.extend(m, update);
+	m.save(function(err) {
+		//error handling!!
+		var query = conditions;
+		model.find(query, function(err, data) {
+			callback.call(callback, data);
+		});
+	});
+	
 };
 
 

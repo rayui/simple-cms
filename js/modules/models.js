@@ -10,7 +10,7 @@ models.Default = {
 		end
 	}
 };
-			
+
 models.Config = {
 	schema: schemas.Config,
 	get: function(body) {
@@ -28,20 +28,36 @@ models.User = {
 	get: function(body) {
 		var that = this;
 		
-		this.fetch({}, [], function(data) {
+		this.fetch({}, ['id','name'], function(data) {
+			console.log(data);
 			that.end(data);
-		});
-		
+		});	
 	},
 	post:function(body) {
+		//new model
+		var that = this;
 		this.data.id = body.id;
 		this.data.name = body.name;
-		this.end(this.data);
+		
+		this.update({id:this.data.id}, this.data, function(data) {
+			console.log(data);
+			that.end(data);	
+		});
+		
+		//this.end(this.data);
 	},
 	put:function(body) {
+		//update model
+		var that = this;
 		this.data.id = body.id;
 		this.data.name = body.name;
-		this.end(this.data);
+		
+		this.update({id:this.data.id}, this.data, function(data) {
+			console.log(data);
+			that.end(data);	
+		});
+		
+		//this.end(this.data);
 	},
 	delete:function(body) {
 		this.end({});

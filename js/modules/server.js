@@ -53,7 +53,7 @@ var Server = function(_settings){
 	
 	//renders a chunk of markup to the response object
 	function serveHTML(data, template, callback) {
-		jade.renderFile(__dirname + template, data, function(err,html) {
+		jade.renderFile(__dirname + template, {data:data}, function(err,html) {
 			if (err) {
 			    data.err = err;
 				serveError(500, data, function(html, http_code) {
@@ -115,7 +115,7 @@ var Server = function(_settings){
 				if (!m) {
 					//get or create the model for this route
 					m = sessionHandler.createModel(sessionId, route.model);
-					m.on('db:fetch', utilities.callback(db.fetch, {scope:db}));
+					m.on('db:fetch', utilities.callback(db.fetch, {scope:db}));	//db.fetch.apply(db)??
 					m.on('db:update', utilities.callback(db.update, {scope:db}));
 				}
 				

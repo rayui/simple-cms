@@ -24,7 +24,7 @@
 		name: 'User',
 		definition: {
 			id: {type: Number, index:true, required: true, validate:[validationRules.isEven, 'Must be an even number']},
-			name: {type: String, required: true},
+			name: {type: String, index:true, required: true},
 			meta: {
 				likes: [String],
 				birth: { type: Date, default: Date.now }

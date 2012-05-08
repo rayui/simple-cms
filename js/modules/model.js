@@ -35,16 +35,19 @@ Model.prototype.onReady = function(callback) {
 };
 
 Model.prototype.fetch = function(query, fields, callback) {
-	this.emit('db:fetch', this.schema.name, query, fields, function(data) {
-		data = data || {};
+	var schemaName = this.schema.name;
+	this.emit('db:fetch', schemaName, query, fields, function(data) {
 		//clone it! do not take a reference or all the sessions will reference the same object
 		callback.call(this, _.extend({},data));
 	});
 };
 
-Model.prototype.update = function(conditions, update, options, callback) {
-	
-};
+Model.prototype.update = function(conditions, update, callback) {
+	var schemaName = this.schema.name;
+	this.emit('db:update', schemaName, conditions, update, function(data) {
+		//clone it! do not take a reference or all the sessions will reference the same object
+		callback.call(this, _.extend({},data));
+	});};
 
 Model.prototype.end = function(data) {
 	this.emit('model:ready', data);
