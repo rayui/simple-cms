@@ -25,28 +25,28 @@ models.User = {
 		name:""
 	},
 	schema: schemas.User,
-	get: function(body) {
+	read: function(body) {
 		var that = this;
 		
-		this.fetch({}, ['id','name'], function(data) {
+		this.find({}, ['id','name'], function(data) {
 			console.log(data);
 			that.end(data);
 		});	
 	},
-	post:function(body) {
+	create:function(body) {
 		//new model
 		var that = this;
 		this.data.id = body.id;
 		this.data.name = body.name;
 		
-		this.update({id:this.data.id}, this.data, function(data) {
+		this.save({id:this.data.id}, this.data, function(data) {
 			console.log(data);
 			that.end(data);	
 		});
 		
 		//this.end(this.data);
 	},
-	put:function(body) {
+	update:function(body) {
 		//update model
 		var that = this;
 		this.data.id = body.id;

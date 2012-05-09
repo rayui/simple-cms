@@ -34,19 +34,19 @@ Model.prototype.onReady = function(callback) {
 	});
 };
 
-Model.prototype.fetch = function(query, fields, callback) {
+Model.prototype.find = function(query, fields, callback) {
 	var schemaName = this.schema.name;
-	this.emit('db:fetch', schemaName, query, fields, function(data) {
+	this.emit('db:find', schemaName, query, fields, function(data) {
 		//clone it! do not take a reference or all the sessions will reference the same object
 		callback.call(this, _.extend({},data));
 	});
 };
 
-Model.prototype.update = function(conditions, update, callback) {
+Model.prototype.save = function(conditions, data, callback) {
 	var schemaName = this.schema.name;
-	this.emit('db:update', schemaName, conditions, update, function(data) {
+	this.emit('db:save', schemaName, data, function(result) {
 		//clone it! do not take a reference or all the sessions will reference the same object
-		callback.call(this, _.extend({},data));
+		callback.call(this, _.extend({}, result));
 	});};
 
 Model.prototype.end = function(data) {

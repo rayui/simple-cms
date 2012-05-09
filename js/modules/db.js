@@ -30,8 +30,8 @@ var Database = function(_settings) {
 	this.db.connection.on('open', onOpen);
 	this.db.connection.on('error', onError);
 	
-	_.bind(this.fetch, this);
-	_.bind(this.update, this);
+	_.bind(this.find, this);
+	_.bind(this.save, this);
 	_.bind(onOpen, this);
 	
 	events.EventEmitter.call(this);
@@ -47,7 +47,7 @@ Database.prototype = Object.create(events.EventEmitter.prototype, {
     }
 });
 
-Database.prototype.fetch = function(schemaName, query, fields, callback) {
+Database.prototype.find = function(schemaName, query, fields, callback) {
 	var model = mongoose.model(schemaName);
 	model.find(query, fields, function(err, data) {
 		//error handling!!
@@ -69,5 +69,15 @@ Database.prototype.update = function(schemaName, conditions, update, callback) {
 	
 };
 
+Database.prototype.save = function(schemaName, data, callback) {
+	var model = mongoose.model(schemaName);
+	var m = new model();
+	_.extend(m, data);
+	m.save(function(err) {
+		//error handling!!
+		callback.call(callback, data);
+	});
+	
+};
 
 exports.Database = Database;

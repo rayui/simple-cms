@@ -115,7 +115,7 @@ var Server = function(_settings){
 				if (!m) {
 					//get or create the model for this route
 					m = sessionHandler.createModel(sessionId, route.model);
-					m.on('db:fetch', utilities.callback(db.fetch, {scope:db}));	//db.fetch.apply(db)??
+					m.on('db:find', utilities.callback(db.find, {scope:db}));	//db.fetch.apply(db)??
 					m.on('db:update', utilities.callback(db.update, {scope:db}));
 				}
 				
@@ -123,7 +123,21 @@ var Server = function(_settings){
 				headers['Content-Type'] === 'application/json' ? m.onReady(sendJSON) : m.onReady(sendHTML);
 				
 				//get the model ready
-				m[req.method.toString().toLowerCase()](req.body);
+				switch (req.method.toString().toLowerCase()) {
+					case 'post':
+						m.create(req.params, req.query, req.body);
+						break;
+					case 'put':
+						m.update(req.params, req.query, req.body);
+						break;
+					case 'delete':
+						m.delete(req.params, req.query, req.body);
+						break;
+					case 'get':
+					default:
+						m.read(req.params, req.query, req.body);
+						break;
+				}
 				
 				break;
 		}
@@ -151,6 +165,8 @@ var Server = function(_settings){
 	for (var i in settings.routing) {
 		var route = settings.routing[i];
 		for (method in route.methods) {
+			//call a function as a method of an array.
+			//should put in some error checking here to make sure request method matches a function...
 			app[route.methods[method]](new RegExp(route.regex), utilities.callback(requestHandler, {args:[route], scope:this}));
 		}
 	}
